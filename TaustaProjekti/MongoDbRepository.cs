@@ -103,11 +103,17 @@ namespace TaustaProjekti
                 //Tarkista onko pelaajan lähettämissä arvoissa epäilyttävän pieniä aikoja läpäistä jokin taso,
                 //(alle 25 sekuntia) ei tarkoita varmaa huijaria. Hyväksy arvot, mutta merkitse pelaaja lipulla myöhempää manuaalista tarkistusta varten
                 //Tästä lipusta tulee olemaan enemmän hyötyä, kun "replay"-tiedostojen lähettäminen on implementoitu.
-                //Myöhemmin aseta jokaiselle tasolla erillinen "epäilyttävä" aikaraja riippuen parhaiden pelaajien lähettämistä arvoista.
+                //TODO: Myöhemmin aseta jokaiselle tasolla erillinen "epäilyttävä" aikaraja riippuen parhaiden pelaajien lähettämistä arvoista. Manuaalinen/automaattinen?
                 for(int i = 0; i< modP.levelScores.Length; i++)
                 {
                     if (modP.levelScores[i] < 25000)
                     {
+                        if (modP.levelScores[i] < 1000)
+                        {
+                            //Jos jonkin tason aika on alle sekunti, hylkää kaikki arvot
+                            await AddFlagToPlayer(id, "zeroTimer");
+                            return false;
+                        }
                         await AddFlagToPlayer(id, "lowScore");
                         break;
                     }
